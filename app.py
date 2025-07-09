@@ -45,5 +45,24 @@ def add_renter():
 
     return redirect('/')
 
+import sqlite3
+
+def init_db():
+    conn = sqlite3.connect('renters.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS renters (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    number TEXT NOT NULL,
+                    amount INTEGER,
+                    paid INTEGER,
+                    month TEXT,
+                    time TEXT
+                )''')
+    conn.commit()
+    conn.close()
+
+init_db()  # Call this when app starts
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
