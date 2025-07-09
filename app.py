@@ -1,0 +1,50 @@
+from flask import Flask, render_template, request, redirect
+import sqlite3
+from datetime import datetime
+
+app = Flask(__name__)
+
+# ✅ Create DB if not exists
+def init_db():
+    conn = sqlite3.connect('rent.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS renters (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT,
+                    phone TEXT,
+                    monthly_rent INTEGER,
+                    paid INTEGER,
+                    timestamp TEXT
+                )''')
+    conn.commit()
+    conn.close()
+
+@app.route('/')
+def index():
+    conn = sqlite3.connect('rent.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM renters ORDER BY timestamp DESC")
+    renters = c.fetchall()
+    conn.close()
+    return render_template('index.html', renters=renters)
+
+@app.route('/add', methods=['POST'])
+def add_renter():
+    name = request.form['name']
+    phone = request.form['phone']
+    rent = int(request.form['monthly_rent'])
+    paid = int(request.form['paid'])
+    timestamp = datetime.now().strftime("%Y-%m-%d %I:%M %p")
+    
+    conn = sqlite3.connect('rent.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO renters (name, phone, monthly_rent, paid, timestamp) VALUES (?, ?, ?, ?, ?)",
+              (name, phone, rent, paid, timestamp))
+    conn.commit()
+    conn.close()
+
+    return redirect('/')
+
+if __name__ == '__main__':
+    init_db()
+    app.run(debug=True)
