@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>R4JNISH 0WN3R</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>R4JNISH 0WN3R</h1>
+
+    <button onclick="document.getElementById('form').style.display='block'" class="add-btn">+</button>
+
+    <div id="form" class="form-popup">
+        <form method="POST" action="/add">
+            <input type="text" name="name" placeholder="Name" required><br>
+            <input type="text" name="phone" placeholder="Phone Number" required><br>
+            <input type="number" name="monthly_rent" placeholder="Monthly Rent ₹" required><br>
+            <input type="number" name="paid" placeholder="Paid ₹" required><br>
+            <button type="submit">Add Renter</button>
+        </form>
+    </div>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Rent</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Date</th>
+        </tr>
+        {% for renter in renters %}
+        <tr>
+            <td>{{ renter[1] }}</td>
+            <td>{{ renter[2] }}</td>
+            <td>₹{{ renter[3] }}</td>
+            <td>₹{{ renter[4] }}</td>
+            <td>₹{{ renter[3] - renter[4] }}</td>
+            <td>{{ renter[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
