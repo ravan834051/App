@@ -28,8 +28,7 @@ init_db()
 def index():
     conn = sqlite3.connect('renters.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM renters ORDER BY timestamp DESC")
-    data = c.fetchall()
+    c.execute("SELECT * FROM renters ORDER BY id DESC")    data = c.fetchall()
     conn.close()
     return render_template("index.html", renters=data)
 
