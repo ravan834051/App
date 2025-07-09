@@ -4,7 +4,7 @@ import datetime
 
 app = Flask(__name__)
 
-# 👇 DB initialize karega agar table nahi bana
+# ✅ DB initialization
 def init_db():
     conn = sqlite3.connect('renters.db')
     c = conn.cursor()
@@ -20,7 +20,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# ⚙️ Init DB at server start
 init_db()
 
 # 🏠 Home route
@@ -28,11 +27,12 @@ init_db()
 def index():
     conn = sqlite3.connect('renters.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM renters ORDER BY id DESC")    data = c.fetchall()
+    c.execute("SELECT * FROM renters ORDER BY id DESC")  # ✅ Fixed this line
+    renters = c.fetchall()
     conn.close()
-    return render_template("index.html", renters=data)
+    return render_template("index.html", renters=renters)
 
-# ➕ Add renter route
+# ➕ Add renter
 @app.route('/add', methods=['POST'])
 def add():
     name = request.form['name']
@@ -40,16 +40,16 @@ def add():
     amount = int(request.form['amount'])
     paid = int(request.form['paid'])
     month = request.form['month']
-    now = datetime.datetime.now().strftime("%I:%M %p %d-%b-%Y")
+    time = datetime.datetime.now().strftime("%I:%M %p %d-%b-%Y")
 
     conn = sqlite3.connect('renters.db')
     c = conn.cursor()
     c.execute("INSERT INTO renters (name, number, amount, paid, month, time) VALUES (?, ?, ?, ?, ?, ?)",
-              (name, number, amount, paid, month, now))
+              (name, number, amount, paid, month, time))
     conn.commit()
     conn.close()
     return redirect('/')
 
-# ✅ Run app on 0.0.0.0
+# ✅ Run on Render
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
